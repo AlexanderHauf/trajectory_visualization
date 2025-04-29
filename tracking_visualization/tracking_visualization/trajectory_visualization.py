@@ -28,26 +28,34 @@ class trajectoryPath(Node):
         qos_best_effort = QoSProfile(
             reliability=QoSReliabilityPolicy.BEST_EFFORT,
             history=QoSHistoryPolicy.KEEP_LAST,
-            depth=10
+            depth=10,
         )
         qos_reliable = QoSProfile(
             reliability=QoSReliabilityPolicy.RELIABLE,
             history=QoSHistoryPolicy.KEEP_LAST,
-            depth=10
+            depth=10,
         )
         # Setup trajectory path publisher
-        self.trajectory_path_pub = self.create_publisher(Path, 'trajectory_path', qos_reliable)
+        self.trajectory_path_pub = self.create_publisher(
+            Path, 'trajectory_path', qos_reliable
+        )
         # Setup subscriber to pose
         self.pose_sub = self.create_subscription(
             Pose, 'pose_topic', self.pose_callback, qos_best_effort
         )
         # Setup subscriber to pose stamped
         self.pose_stamped_sub = self.create_subscription(
-            PoseStamped, 'pose_stamped_topic', self.pose_stamped_callback, qos_best_effort
+            PoseStamped,
+            'pose_stamped_topic',
+            self.pose_stamped_callback,
+            qos_best_effort,
         )
         # Setup subscriber to pose with covariance
         self.pose_cov_sub = self.create_subscription(
-            PoseWithCovariance, 'pose_cov_topic', self.pose_cov_callback, qos_best_effort
+            PoseWithCovariance,
+            'pose_cov_topic',
+            self.pose_cov_callback,
+            qos_best_effort,
         )
         # Setup subscriber to pose with covariance stamped
         self.pose_cov_stamped_sub = self.create_subscription(
