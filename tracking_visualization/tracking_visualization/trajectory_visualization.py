@@ -9,6 +9,7 @@ from geometry_msgs.msg import (
     PoseWithCovarianceStamped,
 )
 from geometry_msgs.msg import Point
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
 
 
 class trajectoryPath(Node):
@@ -24,30 +25,40 @@ class trajectoryPath(Node):
         self.trajectory_path_msg = Path()
         self.previous_pose_position = Point()
 
+        qos_best_effort = QoSProfile(
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            history=QoSHistoryPolicy.KEEP_LAST,
+            depth=10
+        )
+        qos_reliable = QoSProfile(
+            reliability=QoSReliabilityPolicy.RELIABLE,
+            history=QoSHistoryPolicy.KEEP_LAST,
+            depth=10
+        )
         # Setup trajectory path publisher
-        self.trajectory_path_pub = self.create_publisher(Path, 'trajectory_path', 10)
+        self.trajectory_path_pub = self.create_publisher(Path, 'trajectory_path', qos_reliable)
         # Setup subscriber to pose
         self.pose_sub = self.create_subscription(
-            Pose, 'pose_topic', self.pose_callback, 10
+            Pose, 'pose_topic', self.pose_callback, qos_best_effort
         )
         # Setup subscriber to pose stamped
         self.pose_stamped_sub = self.create_subscription(
-            PoseStamped, 'pose_stamped_topic', self.pose_stamped_callback, 10
+            PoseStamped, 'pose_stamped_topic', self.pose_stamped_callback, qos_best_effort
         )
         # Setup subscriber to pose with covariance
         self.pose_cov_sub = self.create_subscription(
-            PoseWithCovariance, 'pose_cov_topic', self.pose_cov_callback, 10
+            PoseWithCovariance, 'pose_cov_topic', self.pose_cov_callback, qos_best_effort
         )
         # Setup subscriber to pose with covariance stamped
         self.pose_cov_stamped_sub = self.create_subscription(
             PoseWithCovarianceStamped,
             'pose_cov_stamped_topic',
             self.pose_cov_stamped_callback,
-            10,
+            qos_best_effort,
         )
         # Setup subscriber to odometry
         self.odom_sub = self.create_subscription(
-            Odometry, 'odom_topic', self.odom_callback, 10
+            Odometry, 'odom_topic', self.odom_callback, qos_best_effort
         )
 
     # =====================================
