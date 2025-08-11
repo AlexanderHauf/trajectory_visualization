@@ -20,6 +20,10 @@ setup(
             'share/' + package_name + '/rviz',
             glob('rviz/*.rviz'),
         ),
+        (
+            'share/ament_index/resource_index/packages',
+            ['resource/' + package_name]
+        ),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
